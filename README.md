@@ -126,16 +126,39 @@ print(f"Prediction shape: {vgrf_pred.shape}")
 
 ### Run XAI Pipeline (Temporal SMILE + TimeSHAP)
 ```bash
-python xai/run_smile_timeshap_complete.py \
-    --data-dir /path/to/Dataset_Aligned_FINAL \
-    --ckpt pretrained/GRFNet_MultiScale.pt \
-    --outdir results/xai/
+# Full SMILE + TimeSHAP pipeline across all 10 LOSO folds
+python xai/timeshap_smile_pipeline.py smile \
+    --data_dir /path/to/Dataset_Aligned_FINAL \
+    --ckpt_glob "pretrained/checkpoints/**/GRFNet_MultiScale.pt" \
+    --outdir results/xai/ \
+    --device cuda \
+    --n_samples 50 \
+    --window_size 15 --stride 10 \
+    --imu_zscore fold \
+    --event_analysis \
+    --timeshap \
+    --timeshap_E 20 \
+    --timeshap_K 300 \
+    --timeshap_target peak_vgrf
+
+# SHAP beeswarm per fold
+python xai/shap_beeswarm_loso.py \
+    --npz /path/to/frozen_dataset_loso_539.npz \
+    --ckpt_glob "pretrained/checkpoints/**/*.pt" \
+    --outdir results/xai/beeswarm/ \
+    --device cuda \
+    --bg_n 100 \
+    --sample_n 50
 ```
 
 Output:
-- `results/xai/aggregates/aggregate_smile_two_panel_*.png` — per-activity heatmaps
-- `results/xai/aggregates/aggregate_timeshap_two_panel_*.png` — TimeSHAP panels
-- `results/xai/single_trials/` — per-trial signal + attribution figures
+- `results/xai/temporal_smile_aggregate.png` — aggregate SMILE heatmap (Fig. 3 in paper)
+- `results/xai/temporal_smile_by_activity.png` — per-activity SMILE heatmaps
+- `results/xai/timeshap_eventwise_heatmap.png` — TimeSHAP eventwise heatmap
+- `results/xai/smile_phase_summary.csv` — loading/mid-stance/push-off attribution %
+- `results/xai/smile_stability_summary.txt` — fold stability (Spearman ρ, Kendall τ)
+- `results/xai/timeshap_eventwise_mean_abs.csv` — TimeSHAP mean |φ| per channel
+- `results/xai/beeswarm/beeswarm_fold_*.png` — per-fold SHAP beeswarm plots
 
 ---
 
@@ -181,13 +204,43 @@ python experiments/ablation.py \
 
 Reproduces: multi-scale dilation vs. single-scale (d=1), Transformer comparison (r=0.581, 2.1M params, ~42ms).
 
-### 5. Generate Figures
+### 5. XAI Analysis
 ```bash
-python visualization/generate_all_figures.py \
-    --results-dir results/ \
-    --outdir figures/ \
-    --dpi 300
+# Temporal SMILE + TimeSHAP (produces all Fig. 3 panels)
+python xai/timeshap_smile_pipeline.py smile \
+    --data_dir data/Dataset_Aligned_FINAL \
+    --ckpt_glob "results/checkpoints/**/GRFNet_MultiScale.pt" \
+    --outdir results/xai/ \
+    --device cuda --n_samples 50 \
+    --window_size 15 --stride 10 \
+    --imu_zscore fold \
+    --event_analysis --timeshap \
+    --timeshap_E 20 --timeshap_K 300 \
+    --timeshap_target peak_vgrf
+
+# SHAP beeswarm (Fig. 3a)
+python xai/shap_beeswarm_loso.py \
+    --npz results/frozen_dataset_loso_539.npz \
+    --ckpt_glob "results/checkpoints/**/*.pt" \
+    --outdir results/xai/beeswarm/ \
+    --device cuda --bg_n 100 --sample_n 50
+
+# vGRF stance profiles (mean ± SD and median + IQR)
+python visualization/plot_vgrf_profiles.py \
+    --npz results/frozen_dataset_loso_539.npz \
+    --outdir results/figures/
 ```
+
+### 6. Phase Attribution Percentages
+```bash
+python xai/compute_phase_percentages.py \
+    --shap_csv results/xai/shap_temporal_agg.csv \
+    --smile_csv results/xai/smile_temporal_agg.csv
+```
+
+Expected output (matches paper):
+- SHAP: Loading 62.6%, Mid-stance 23.4%, Push-off 14.0%
+- SMILE: Loading 50.4%, Mid-stance 33.6%, Push-off 16.0%
 
 ---
 
@@ -201,34 +254,43 @@ multi-sensor-grf-estimation/
 │
 ├── model/
 │   ├── __init__.py
-│   └── grfnet_multiscale.py        # GRFNet-MultiScale architecture
-│                                   # d∈{1,2,4,8}, k=3, ~1.2M params
+│   └── grfnet_multiscale.py             # GRFNet-MultiScale architecture
+│                                        # d∈{1,2,4,8}, k=3, ~1.2M params
 │
 ├── data_processing/
 │   ├── __init__.py
-│   ├── preprocessing.py            # Alignment, low-pass filter (IMU: 10 Hz, FP: 20 Hz)
-│   ├── stance_extraction.py        # Fixed 198-sample windows, z-score normalization
-│   └── data_loader.py              # PyTorch Dataset/DataLoader
+│   ├── preprocessing.py                 # Alignment, low-pass filter
+│   │                                    # (IMU: 10 Hz, force plate: 20 Hz)
+│   ├── stance_extraction.py             # Fixed 198-sample windows,
+│   │                                    # z-score normalization
+│   ├── data_loader.py                   # PyTorch Dataset/DataLoader
+│   └── add_mass_to_csvs.py              # Adds mass_kg column by participant ID
 │
 ├── experiments/
-│   ├── train_loso.py               # 10-fold LOSO training loop
-│   ├── evaluate_loso.py            # Evaluation: r, RMSE, derived metrics
-│   ├── ablation.py                 # Dilation ablation + Transformer comparison
-│   └── config.yaml                 # Hyperparameters
+│   ├── train_loso.py                    # 10-fold LOSO training loop
+│   ├── evaluate_loso.py                 # Evaluation: r, RMSE, derived metrics
+│   ├── ablation.py                      # Dilation ablation + Transformer comparison
+│   └── config.yaml                      # Hyperparameters
 │
 ├── xai/
-│   ├── run_smile_timeshap_complete.py     # Main XAI pipeline (all folds)
-│   ├── enhanced_stance_smile_from_outputs.py   # Activity SMILE heatmaps
-│   ├── enhanced_stance_smile_all_folds_2.py    # Per-fold composites
-│   └── plot_aggregate_two_panel.py        # Two-panel aggregate figures
+│   ├── timeshap_smile_pipeline.py       # Main XAI pipeline — Temporal SMILE +
+│   │                                    # TimeSHAP across all 10 folds
+│   │                                    # (produces Fig. 3b–k in paper)
+│   ├── shap_beeswarm_loso.py            # SHAP beeswarm per fold
+│   │                                    # (produces Fig. 3a in paper)
+│   ├── stance_normalise_utils.py        # Stance resampling + phase aggregation
+│   │                                    # utilities shared across XAI scripts
+│   └── compute_phase_percentages.py     # Loading/mid-stance/push-off attribution
+│                                        # percentages from temporal CSVs
 │
 ├── visualization/
-│   ├── generate_all_figures.py
-│   └── plot_utils.py
+│   ├── plot_vgrf_profiles.py            # Stance-normalised vGRF mean±SD
+│   │                                    # and median+IQR plots
+│   └── plot_utils.py                    # Shared plotting helpers
 │
 ├── pretrained/
-│   ├── GRFNet_MultiScale.pt        # Dual-sensor pretrained weights
-│   └── GRFNet_MultiScale_wrist.pt  # Wrist-only pretrained weights
+│   ├── GRFNet_MultiScale.pt             # Dual-sensor pretrained weights
+│   └── GRFNet_MultiScale_wrist.pt       # Wrist-only pretrained weights
 │
 ├── sample_data/
 │   ├── sample_walking.csv
@@ -254,6 +316,7 @@ Each aligned CSV file contains synchronized IMU and force plate data at 100 Hz:
 | `wrist_accX/Y/Z` | Wrist Apple Watch acceleration | m/s² |
 | `wrist_gyroX/Y/Z` | Wrist Apple Watch angular velocity | rad/s |
 | `force_z_N` | Vertical GRF from AMTI OR6-7 | N |
+| `mass_kg` | Participant body mass | kg |
 
 Input tensor shape to model: **(198 × 12)** — 1.98 s window, 12 inertial channels.
 
@@ -297,7 +360,7 @@ If you use this code, please cite both the paper and the dataset:
 **Parvin Ghaffarzadeh** (corresponding author)
 - Institution: University of Hull, Department of Computer Science (DAIM)
 - Email: p.ghaffarzadeh@hull.ac.uk
-- GitHub: [@parvinghaffarzadeh](https://github.com/parvinghaffarzadeh)
+- GitHub: [@ParvinGhaffarzadeh](https://github.com/ParvinGhaffarzadeh)
 
 Supervisory team: Prof. Yiannis Papadopoulos (lead), Dr. Debarati Chakraborty,
 Dr. Koorosh Aslansefat (University of Hull); Dr. Ali Dostan (Nottingham Trent University).
