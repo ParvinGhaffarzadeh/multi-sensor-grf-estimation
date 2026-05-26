@@ -69,8 +69,8 @@ The system is best suited for **longitudinal load monitoring** rather than exact
 
 ### Option 1: Conda (Recommended)
 ```bash
-git clone https://github.com/parvinghaffarzadeh/grfnet-multiscale.git
-cd grfnet-multiscale
+git clone https://github.com/ParvinGhaffarzadeh/multi-sensor-grf-estimation.git
+cd multi-sensor-grf-estimation
 
 conda create -n grfnet python=3.11
 conda activate grfnet
@@ -80,8 +80,8 @@ pip install -r requirements.txt
 
 ### Option 2: Virtual Environment
 ```bash
-git clone https://github.com/parvinghaffarzadeh/grfnet-multiscale.git
-cd grfnet-multiscale
+git clone https://github.com/ParvinGhaffarzadeh/multi-sensor-grf-estimation.git
+cd multi-sensor-grf-estimation
 
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
@@ -194,7 +194,7 @@ python visualization/generate_all_figures.py \
 ## Repository Structure
 
 ```
-grfnet-multiscale/
+multi-sensor-grf-estimation/
 ├── README.md
 ├── LICENSE
 ├── requirements.txt
