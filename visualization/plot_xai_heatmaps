@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-improved_xai_viz_with_context_2.py
+plot_xai_heatmaps.py
 ==================================
 4x3 grid of subplots — one per IMU channel.
 Each subplot:
