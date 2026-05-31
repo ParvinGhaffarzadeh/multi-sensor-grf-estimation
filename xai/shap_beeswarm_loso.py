@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-shap_loso_beeswarm_stability_masked.py
+shap_beeswarm_loso.py
 =====================================
 
 LOSO SHAP analysis for a padded (N,T,C) NPZ dataset.
