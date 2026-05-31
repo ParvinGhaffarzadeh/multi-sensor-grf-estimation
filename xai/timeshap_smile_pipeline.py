@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-temporal_xai_onefile_eventfixed_TIMESHAPCONSISTENT_FULL.py
+timeshap_smile_pipeline.py
 =========================================================
 One-file Temporal explainability for GRFNet-MultiScale with:
   - Temporal SHAP (from frozen NPZ LOSO dataset + checkpoints)
