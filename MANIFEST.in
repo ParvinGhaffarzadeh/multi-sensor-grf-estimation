@@ -1,0 +1,13 @@
+include CHANGELOG.md
+include CITATION.cff
+include CODE_OF_CONDUCT.md
+include CONTRIBUTING.md
+include LICENSE
+include README.md
+include SECURITY.md
+include SUPPORT.md
+include loso_final_results.csv
+include requirements-dev.txt
+include requirements.txt
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

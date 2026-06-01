@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper and dataset."
+title: "Edge-First Ground Reaction Force Estimation with Consumer Smartwatches"
+authors:
+  - family-names: Ghaffarzadeh
+    given-names: Parvin
+  - family-names: Chakraborty
+    given-names: Debarati
+  - family-names: Aslansefat
+    given-names: Koorosh
+  - family-names: Dostan
+    given-names: Ali
+  - family-names: Papadopoulos
+    given-names: Yiannis
+year: 2026
+repository-code: "https://github.com/ParvinGhaffarzadeh/multi-sensor-grf-estimation"
+license: MIT
+references:
+  - type: dataset
+    title: "A Multi-Modal Dataset for Ground Reaction Force Estimation Using Consumer Wearable Sensors"
+    doi: "10.5281/zenodo.17376717"

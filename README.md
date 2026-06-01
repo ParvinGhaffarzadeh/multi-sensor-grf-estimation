@@ -3,7 +3,7 @@
 [![IEEE Internet Computing](https://img.shields.io/badge/IEEE%20Internet%20Computing-2026-blue)](https://www.computer.org/csdl/magazine/ic)
 [![Dataset](https://img.shields.io/badge/Dataset-Zenodo-blue)](https://zenodo.org/records/17376717)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 
 ## Overview
@@ -371,6 +371,12 @@ If you use this code, please cite both the paper and the dataset:
 
 Supervisory team: Prof. Yiannis Papadopoulos (lead), Dr. Debarati Chakraborty,
 Dr. Koorosh Aslansefat (University of Hull); Dr. Ali Dostan (Nottingham Trent University).
+
+---
+
+## Contributing and Security
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and [SECURITY.md](SECURITY.md) before opening issues or pull requests. Use [SUPPORT.md](SUPPORT.md) for guidance on where to ask questions or report reproducible problems.
 
 ---
 

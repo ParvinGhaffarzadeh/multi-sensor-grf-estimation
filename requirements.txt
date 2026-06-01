@@ -1,0 +1,9 @@
+matplotlib>=3.7
+numpy>=1.24
+pandas>=1.5
+scikit-learn>=1.2
+scipy>=1.10
+shap>=0.44
+torch>=2.0
+tqdm>=4.65
+xgboost>=1.7

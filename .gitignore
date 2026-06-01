@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+.pip-cache/
+.wheel-test/
+
+# Test and coverage output
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Model, data, and experiment artifacts
+pretrained/
+results/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+Dataset_Aligned*/
+Dataset_Aligned.zip
+
+# Local editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

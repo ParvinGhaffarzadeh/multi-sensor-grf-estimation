@@ -1,0 +1,45 @@
+name: Feature request
+description: Suggest an improvement to the model, data pipeline, XAI pipeline, documentation, or package.
+title: "[Feature]: "
+labels: ["enhancement", "needs triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What limitation or workflow issue are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior, model change, metric, or interface you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention workarounds or other designs you considered.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Python API
+        - Model architecture
+        - Training or evaluation
+        - XAI analysis
+        - Visualization
+        - Documentation
+        - Packaging
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to open a pull request for this feature.

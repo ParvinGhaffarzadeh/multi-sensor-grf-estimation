@@ -1,0 +1,45 @@
+name: Research task
+description: Propose a paper, experiment, dataset, model, metric, or XAI task.
+title: "[Research]: "
+labels: ["research", "needs triage"]
+body:
+  - type: dropdown
+    id: task_type
+    attributes:
+      label: Task type
+      options:
+        - Paper or literature review
+        - Model experiment
+        - Evaluation metric
+        - Dataset or preprocessing
+        - Clinical or biomechanical validation
+        - XAI method
+        - Figure or visualization
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Explain the proposed research task.
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this useful for ground reaction force estimation or wearable-sensor biomechanics?
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References or data source
+      description: Link papers, datasets, licenses, notebooks, or prior implementations.
+  - type: checkboxes
+    id: data_license
+    attributes:
+      label: Data and licensing
+      options:
+        - label: I included source and license information for any proposed dataset.
+        - label: The proposed data does not contain credentials, personal, sensitive, or confidential information.

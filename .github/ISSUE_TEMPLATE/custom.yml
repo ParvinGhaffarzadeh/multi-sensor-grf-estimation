@@ -1,0 +1,48 @@
+name: Custom issue
+description: Open a structured issue that does not fit the other templates.
+title: "[Issue]: "
+labels: ["needs triage"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to do, and why does it matter for this project?
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Question
+        - Research discussion
+        - Maintenance
+        - Packaging
+        - Documentation
+        - Data quality
+        - Biomechanics or clinical interpretation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: What change, answer, or decision would resolve this issue?
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Link related papers, datasets, issues, pull requests, or examples.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked existing issues and documentation first.
+          required: true
+        - label: I did not include private participant data, credentials, or other secrets.
+          required: true
